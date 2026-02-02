@@ -60,6 +60,7 @@ languages = [
   "CSS",
   "JavaScript",
   "TypeScript",
+  "TSX",
   "Svelte",
   "Astro",
   "Vue",
