@@ -1,6 +1,14 @@
 [package]
-name = "codeowners"
+name = "codeowners-zed"
 version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+
+[workspace]
+resolver = "2"
+members = ["crates/*"]
+
+[workspace.package]
 edition = "2021"
 license = "MIT"
 
@@ -8,4 +16,4 @@ license = "MIT"
 crate-type = ["cdylib"]
 
 [dependencies]
-zed_extension_api = "0.2.0"
+zed_extension_api = "0.7.0"
