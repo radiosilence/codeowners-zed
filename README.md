@@ -79,16 +79,24 @@ Override severity for specific diagnostics. Values: `"off"`, `"hint"`, `"info"`,
 }
 ```
 
-| Diagnostic Code          | Default | Description                         |
-| ------------------------ | ------- | ----------------------------------- |
-| `invalid-pattern`        | error   | Invalid glob pattern syntax         |
-| `invalid-owner`          | error   | Invalid owner format                |
-| `pattern-no-match`       | warning | Pattern matches no files            |
-| `duplicate-owner`        | warning | Same owner appears multiple times   |
-| `shadowed-rule`          | warning | Rule is shadowed by an earlier rule |
-| `no-owners`              | hint    | Rule has no owners                  |
-| `unowned-files`          | info    | Files without ownership             |
-| `github-owner-not-found` | warning | Owner doesn't exist on GitHub       |
+**CODEOWNERS file diagnostics:**
+
+| Diagnostic Code          | Default | Description                                           |
+| ------------------------ | ------- | ----------------------------------------------------- |
+| `invalid-pattern`        | error   | Invalid glob pattern syntax                           |
+| `invalid-owner`          | error   | Invalid owner format (@user, @org/team, or email)     |
+| `pattern-no-match`       | warning | Pattern matches no files in the repo                  |
+| `duplicate-owner`        | warning | Same owner listed multiple times on one rule          |
+| `shadowed-rule`          | warning | Rule is completely shadowed by an earlier rule        |
+| `no-owners`              | hint    | Rule line has no owners (e.g., `src/` with no @users) |
+| `unowned-files`          | info    | Summary: "X files have no code owners"                |
+| `github-owner-not-found` | warning | Owner doesn't exist on GitHub (requires token)        |
+
+**Source file diagnostics:**
+
+| Diagnostic Code   | Default | Description                                      |
+| ----------------- | ------- | ------------------------------------------------ |
+| `file-not-owned`  | hint    | File has no matching CODEOWNERS rule (full-file) |
 
 ### Project Config Files
 
