@@ -1,7 +1,7 @@
 id = "codeowners"
 name = "CODEOWNERS"
-description = "Syntax highlighting and ownership info for GitHub CODEOWNERS files"
-version = "0.2.0"
+description = "Syntax highlighting, linting, formatting, and ownership info for GitHub CODEOWNERS files"
+version = "0.4.0"
 schema_version = 1
 authors = [
   "Lukas Malkmus <mail@lukasmalkmus.com>",
@@ -19,6 +19,8 @@ commit = "5fc25f72a44d2fe5b9218c712062dcec79dac87e"
 
 [language_servers.codeowners-lsp]
 name = "CODEOWNERS LSP"
+code_action_kinds = ["quickfix", "source.fixAll"]
+language_ids = { "CODEOWNERS" = "codeowners" }
 languages = [
   # General Purpose
   "Python",
@@ -82,7 +84,7 @@ languages = [
   "CSharp",
   # Configuration / Automation
   "Ansible",
-  "Docker",
+  "Dockerfile",
   "Makefile",
   "Terraform",
   # Other
