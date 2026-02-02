@@ -50,7 +50,7 @@ impl CodeownersExtension {
         );
 
         let release = zed::latest_github_release(
-            "radiosilence/codeowners-zed",
+            "radiosilence/codeowners-lsp",
             zed::GithubReleaseOptions {
                 require_assets: true,
                 pre_release: false,
