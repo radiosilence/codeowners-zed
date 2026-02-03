@@ -5,7 +5,7 @@ version = "0.1.0"
 schema_version = 1
 authors = [
   "Lukas Malkmus <mail@lukasmalkmus.com>",
-  "James Cleveland <jamescleveland@gmail.com>"
+  "James Cleveland <jc@blit.cc>"
 ]
 repository = "https://github.com/radiosilence/codeowners-zed"
 
