@@ -37,6 +37,7 @@ This extension uses [codeowners-lsp](https://github.com/radiosilence/codeowners-
 2. `Cmd+Shift+P` → **zed: extensions**
 3. Search for "CODEOWNERS LSP"
 4. Click **Install**
+5. **Important!**: Check you have either `...` or `codeowners-lsp` in your list of language servers for any languages you have overridden the configuration for!
 
 The LSP binary is automatically downloaded from [GitHub releases](https://github.com/radiosilence/codeowners-lsp/releases) on first use.
 
