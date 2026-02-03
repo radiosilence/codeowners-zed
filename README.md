@@ -155,6 +155,10 @@ cargo build --target wasm32-wasip1 --release
 
 The LSP is in a [separate repo](https://github.com/radiosilence/codeowners-lsp) and downloaded automatically from releases.
 
+## Credits
+
+Based on [codeowners-zed](https://github.com/lukasmalkmus/codeowners-zed) by [Lukas Malkmus](https://github.com/lukasmalkmus), which provides the tree-sitter grammar integration and base extension structure.
+
 ## Resources
 
 - [codeowners-lsp](https://github.com/radiosilence/codeowners-lsp) - The language server powering this extension
