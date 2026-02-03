@@ -6,26 +6,30 @@ This extension uses [codeowners-lsp](https://github.com/radiosilence/codeowners-
 
 ## Features
 
-- **Syntax Highlighting**: Full support via [tree-sitter-codeowners](https://github.com/lukasmalkmus/tree-sitter-codeowners)
-- **Ownership Display**: See who owns each file via inlay hints and hover (with clickable GitHub links)
-- **Go-to-Definition**: Jump from any file to the matching CODEOWNERS rule
-- **Linting**: Detects shadowed rules, invalid patterns, duplicate owners, unowned files, and more
-- **Quick Fixes**: Code actions to fix detected problems (remove dead rules, add owners, fix all safe issues)
+### In Any File
+
+- **Hover**: File ownership with clickable GitHub links and rich metadata (team descriptions, member counts, user bios)
+- **Inlay Hints**: Ownership displayed at top of file
+- **Go-to-Definition**: Jump to the CODEOWNERS rule matching the current file
+- **Code Actions**: Take ownership of files directly from your editor
+
+### In CODEOWNERS Files
+
+- **Diagnostics**: Invalid patterns/owners, no-match patterns, shadowed rules, duplicate owners, coverage stats
+- **Completions**: fzf-style fuzzy path completions, owner completions from GitHub API
+- **Code Actions**: Remove shadowed rules, remove duplicates, add owners, add catch-all rule, fix all safe issues
 - **Formatting**: Format and normalize CODEOWNERS files
-- **Completions**: Path completions (`/`) and owner completions (`@`)
-- **Document Symbols**: Outline view of sections and rules
-- **Find References**: Find all rules for a given owner
-- **Rename**: Rename owners across all rules
-- **Workspace Symbols**: Search patterns and owners across the file
-- **Code Lens**: Inline file counts per rule
-- **Auto-detection**: Finds `CODEOWNERS` in standard locations (`.github/`, root, `docs/`)
-
-## Viewing File Ownership
-
-Once installed, ownership info is shown in two ways:
-
-1. **Inlay Hint**: An inline hint appears at line 1 showing `Owned by: @team`
-2. **Hover**: Hover anywhere in the file to see ownership in a tooltip
+- **Document Symbols**: Outline view with sections and rules (Cmd+Shift+O)
+- **Workspace Symbols**: Search patterns and owners (Cmd+T)
+- **Find References**: Find all rules containing an owner
+- **Rename**: Rename an owner across all rules
+- **Code Lens**: Inline file count and owners above each rule
+- **Folding**: Collapse comment blocks and sections
+- **Semantic Highlighting**: Syntax colors for patterns, owners, globs, comments
+- **Signature Help**: Pattern syntax documentation while typing (`*`, `**`, `?`, `[...]`)
+- **Selection Range**: Smart expand selection (word → owner → all owners → rule → section)
+- **Linked Editing**: Edit an owner and all occurrences update simultaneously
+- **Pattern Hover**: Hover over patterns to see matching files
 
 ## Installation
 
@@ -38,7 +42,7 @@ The LSP binary is automatically downloaded from [GitHub releases](https://github
 
 ### Using a Custom Binary
 
-If you prefer to manage the binary yourself, install `codeowners-lsp` and either put it in your `PATH` or specify the path:
+Install `codeowners-lsp` yourself (via [mise](https://mise.jdx.dev/), Homebrew, or direct download) and put it in your `PATH`, or specify the path in Zed settings:
 
 ```json
 {
@@ -54,47 +58,53 @@ If you prefer to manage the binary yourself, install `codeowners-lsp` and either
 
 ## Configuration
 
-Configure the LSP in your Zed settings:
+**Recommended**: Use `.codeowners-lsp.toml` in your workspace root. This keeps config with your project and works across all editors. For user-specific overrides (gitignore this), use `.codeowners-lsp.local.toml`.
 
-```json
-{
-  "lsp": {
-    "codeowners-lsp": {
-      "initialization_options": {
-        "path": ".github/CODEOWNERS",
-        "individual": "@your-username",
-        "team": "@your-org/your-team",
-        "github_token": "env:GITHUB_TOKEN",
-        "validate_owners": false
-      }
-    }
-  }
-}
+```toml
+# CODEOWNERS location (relative to workspace root)
+path = "custom/CODEOWNERS"
+
+# Your identifiers for "take ownership" actions
+individual = "@username"
+team = "@org/team-name"
+
+# GitHub validation (optional)
+github_token = "env:GITHUB_TOKEN"
+validate_owners = false
+
+# Diagnostic severity overrides
+# Values: "off", "hint", "info", "warning", "error"
+[diagnostics]
+no-owners = "off"
+pattern-no-match = "hint"
 ```
 
-| Option            | Description                                                        |
-| ----------------- | ------------------------------------------------------------------ |
-| `path`            | Custom CODEOWNERS location (auto-detected if not set)              |
-| `individual`      | Your GitHub handle for "take ownership" actions                    |
-| `team`            | Your team's handle for "take ownership" actions                    |
-| `github_token`    | GitHub token for owner validation (use `env:VAR` to read from env) |
-| `validate_owners` | Enable GitHub API validation of owners                             |
-| `diagnostics`     | Severity overrides per diagnostic (see below)                      |
+| Option            | Description                                                                    |
+| ----------------- | ------------------------------------------------------------------------------ |
+| `path`            | Custom CODEOWNERS location (relative to workspace root)                        |
+| `individual`      | Your GitHub handle for "take ownership" actions                                |
+| `team`            | Your team's handle for "take ownership" actions                                |
+| `github_token`    | GitHub token for owner validation. Use `env:VAR_NAME` to read from environment |
+| `validate_owners` | Enable GitHub API validation of @user and @org/team (default: false)           |
+| `diagnostics`     | Map of diagnostic code to severity override                                    |
 
 Auto-detection searches: `CODEOWNERS` → `.github/CODEOWNERS` → `docs/CODEOWNERS`
 
-### Diagnostic Severity Overrides
+### Zed Settings (Alternative)
 
-Override severity for specific diagnostics. Values: `"off"`, `"hint"`, `"info"`, `"warning"`, `"error"`
+You can also configure via Zed's `initialization_options` (these override the TOML config):
 
 ```json
 {
   "lsp": {
     "codeowners-lsp": {
       "initialization_options": {
+        "individual": "@your-username",
+        "team": "@your-org/your-team",
+        "github_token": "env:GITHUB_TOKEN",
+        "validate_owners": false,
         "diagnostics": {
-          "no-owners": "off",
-          "pattern-no-match": "hint"
+          "no-owners": "off"
         }
       }
     }
@@ -102,44 +112,30 @@ Override severity for specific diagnostics. Values: `"off"`, `"hint"`, `"info"`,
 }
 ```
 
+### Diagnostic Codes
+
 **CODEOWNERS file diagnostics:**
 
-| Diagnostic Code          | Default | Description                                           |
-| ------------------------ | ------- | ----------------------------------------------------- |
-| `invalid-pattern`        | error   | Invalid glob pattern syntax                           |
-| `invalid-owner`          | error   | Invalid owner format (@user, @org/team, or email)     |
-| `pattern-no-match`       | warning | Pattern matches no files in the repo                  |
-| `duplicate-owner`        | warning | Same owner listed multiple times on one rule          |
-| `shadowed-rule`          | warning | Rule is completely shadowed by an earlier rule        |
-| `no-owners`              | hint    | Rule line has no owners (e.g., `src/` with no @users) |
-| `unowned-files`          | info    | Summary: "X files have no code owners"                |
-| `github-owner-not-found` | warning | Owner doesn't exist on GitHub (requires token)        |
+| Diagnostic Code          | Default | Description                                       |
+| ------------------------ | ------- | ------------------------------------------------- |
+| `invalid-pattern`        | error   | Invalid glob pattern syntax                       |
+| `invalid-owner`          | error   | Invalid owner format (@user, @org/team, or email) |
+| `pattern-no-match`       | warning | Pattern matches no files in the repo              |
+| `duplicate-owner`        | warning | Same owner listed multiple times on one rule      |
+| `shadowed-rule`          | warning | Rule is completely shadowed by a later rule       |
+| `no-owners`              | hint    | Rule has no owners                                |
+| `unowned-files`          | info    | Summary of files without code owners              |
+| `github-owner-not-found` | warning | Owner doesn't exist on GitHub (requires token)    |
 
 **Source file diagnostics:**
 
-| Diagnostic Code   | Default | Description                                      |
-| ----------------- | ------- | ------------------------------------------------ |
-| `file-not-owned`  | hint    | File has no matching CODEOWNERS rule (full-file) |
-
-### Project Config Files
-
-You can also configure via `.codeowners-lsp.toml` in your workspace root (and `.codeowners-lsp.local.toml` for user-specific overrides):
-
-```toml
-individual = "@username"
-team = "@org/team-name"
-github_token = "env:GITHUB_TOKEN"
-validate_owners = true
-
-[diagnostics]
-no-owners = "off"
-```
+| Diagnostic Code  | Default | Description                          |
+| ---------------- | ------- | ------------------------------------ |
+| `file-not-owned` | hint    | File has no matching CODEOWNERS rule |
 
 ## Development
 
 ### Installing as Dev Extension
-
-To test local changes:
 
 1. Clone this repo
 2. In Zed: `Cmd+Shift+P` → **zed: install dev extension**
@@ -149,11 +145,8 @@ To test local changes:
 ### Building from Source
 
 ```bash
-# Build the extension (WASM)
 cargo build --target wasm32-wasip1 --release
 ```
-
-The LSP is in a [separate repo](https://github.com/radiosilence/codeowners-lsp) and downloaded automatically from releases.
 
 ## Credits
 
@@ -161,7 +154,7 @@ Based on [codeowners-zed](https://github.com/lukasmalkmus/codeowners-zed) by [Lu
 
 ## Resources
 
-- [codeowners-lsp](https://github.com/radiosilence/codeowners-lsp) - The language server powering this extension
+- [codeowners-lsp](https://github.com/radiosilence/codeowners-lsp) - The language server (includes CLI for linting, formatting, coverage)
 - [CODEOWNERS extension](https://github.com/lukasmalkmus/codeowners-zed) - Base extension (syntax highlighting only)
 - [tree-sitter-codeowners](https://github.com/lukasmalkmus/tree-sitter-codeowners) - The grammar
 - [GitHub CODEOWNERS Documentation](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners)
