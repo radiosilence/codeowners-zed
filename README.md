@@ -1,16 +1,23 @@
-# CODEOWNERS Extension for Zed
+# CODEOWNERS LSP Extension for Zed
 
-Syntax highlighting, linting, formatting, and ownership info for GitHub CODEOWNERS files.
+LSP-powered linting, formatting, ownership info, and syntax highlighting for GitHub CODEOWNERS files.
+
+This extension uses [codeowners-lsp](https://github.com/radiosilence/codeowners-lsp) for advanced features. If you just want syntax highlighting without the LSP, use the base [CODEOWNERS](https://github.com/lukasmalkmus/codeowners-zed) extension instead.
 
 ## Features
 
-- **Syntax Highlighting**: Full support for CODEOWNERS syntax via [tree-sitter-codeowners](https://github.com/lukasmalkmus/tree-sitter-codeowners)
-- **Ownership Display**: See who owns each file you're editing via inlay hints and hover (with clickable GitHub links)
+- **Syntax Highlighting**: Full support via [tree-sitter-codeowners](https://github.com/lukasmalkmus/tree-sitter-codeowners)
+- **Ownership Display**: See who owns each file via inlay hints and hover (with clickable GitHub links)
 - **Go-to-Definition**: Jump from any file to the matching CODEOWNERS rule
 - **Linting**: Detects shadowed rules, invalid patterns, duplicate owners, unowned files, and more
 - **Quick Fixes**: Code actions to fix detected problems (remove dead rules, add owners, fix all safe issues)
 - **Formatting**: Format and normalize CODEOWNERS files
-- **Completions**: Path completions (triggered by `/`) and owner completions (triggered by `@`)
+- **Completions**: Path completions (`/`) and owner completions (`@`)
+- **Document Symbols**: Outline view of sections and rules
+- **Find References**: Find all rules for a given owner
+- **Rename**: Rename owners across all rules
+- **Workspace Symbols**: Search patterns and owners across the file
+- **Code Lens**: Inline file counts per rule
 - **Auto-detection**: Finds `CODEOWNERS` in standard locations (`.github/`, root, `docs/`)
 
 ## Viewing File Ownership
@@ -24,10 +31,26 @@ Once installed, ownership info is shown in two ways:
 
 1. Open Zed
 2. `Cmd+Shift+P` → **zed: extensions**
-3. Search for "CODEOWNERS"
+3. Search for "CODEOWNERS LSP"
 4. Click **Install**
 
-The LSP binary is automatically downloaded from GitHub releases on first use.
+The LSP binary is automatically downloaded from [GitHub releases](https://github.com/radiosilence/codeowners-lsp/releases) on first use.
+
+### Using a Custom Binary
+
+If you prefer to manage the binary yourself, install `codeowners-lsp` and either put it in your `PATH` or specify the path:
+
+```json
+{
+  "lsp": {
+    "codeowners-lsp": {
+      "binary": {
+        "path": "/path/to/codeowners-lsp"
+      }
+    }
+  }
+}
+```
 
 ## Configuration
 
@@ -132,8 +155,15 @@ cargo build --target wasm32-wasip1 --release
 
 The LSP is in a [separate repo](https://github.com/radiosilence/codeowners-lsp) and downloaded automatically from releases.
 
+## Credits
+
+Based on [codeowners-zed](https://github.com/lukasmalkmus/codeowners-zed) by [Lukas Malkmus](https://github.com/lukasmalkmus), which provides the tree-sitter grammar integration and base extension structure.
+
 ## Resources
 
+- [codeowners-lsp](https://github.com/radiosilence/codeowners-lsp) - The language server powering this extension
+- [CODEOWNERS extension](https://github.com/lukasmalkmus/codeowners-zed) - Base extension (syntax highlighting only)
+- [tree-sitter-codeowners](https://github.com/lukasmalkmus/tree-sitter-codeowners) - The grammar
 - [GitHub CODEOWNERS Documentation](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners)
 
 ## License

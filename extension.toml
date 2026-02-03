@@ -1,7 +1,7 @@
-id = "codeowners"
-name = "CODEOWNERS"
-description = "Syntax highlighting, linting, formatting, and ownership info for GitHub CODEOWNERS files"
-version = "0.4.0"
+id = "codeowners-lsp"
+name = "CODEOWNERS LSP"
+description = "LSP-powered linting, formatting, ownership info, and syntax highlighting for GitHub CODEOWNERS files"
+version = "0.1.0"
 schema_version = 1
 authors = [
   "Lukas Malkmus <mail@lukasmalkmus.com>",
